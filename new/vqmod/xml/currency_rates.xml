@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<modification>
+
+	<id>CurrencyRates</id>
+
+	<version>1.0</version>
+
+	<vqmver>2.4.0</vqmver>
+
+	<author>iSenseLabs</author>
+
+
+
+
+
+	<file name="admin/controller/setting/setting.php">
+
+		<operation error="skip">
+
+			<search position="after" ><![CDATA[$this->model_localisation_currency->updateCurrencies();]]></search>
+
+			<add><![CDATA[				$cache = DIR_CACHE.'currencyrates.cachetime';
+
+				if(file_exists($cache)){
+
+					unlink ( $cache );
+
+				}]]></add>
+
+		</operation>
+
+	</file>
+
+	
+
+	<file name="admin/controller/localisation/currency.php">
+
+		<operation>
+
+			<search position="before"><![CDATA[$this->model_localisation_currency->editCurrency($this->request->get['currency_id'], $this->request->post);]]></search>
+
+			<add><![CDATA[$file = fopen(dirname(DIR_APPLICATION)."/vendors/currencyrates/consolidated.csv","r");
+
+			$code = $this->request->post["code"];
+
+			$officialCode = array();
+
+			$count = 0;
+
+			while(! feof($file))
+
+  			{
+
+				$officialCode = fgetcsv($file);
+
+				if($code == $officialCode[2]){
+
+					$cache = DIR_CACHE.'currencyrates.cachetime';
+
+					if(file_exists($cache)){
+
+						unlink ( $cache );
+
+					}
+
+					$count = 1;
+
+					fclose($file);]]></add>
+
+		</operation>
+
+	</file>
+
+	
+
+	<file name="admin/controller/localisation/currency.php">
+
+		<operation>
+
+			<search position="after" index="2"><![CDATA[$this->redirect($this->url->link('localisation/currency', 'token=' . $this->session->data['token'] . $url, 'SSL'));]]></search>
+
+			<add><![CDATA[}
+
+  				
+
+  			}
+
+			
+
+			if($count != 1){
+
+				
+
+				$this->error['code'] = "No such Code!";
+
+			}
+
+
+
+		]]></add>
+
+		</operation>
+
+	</file>
+
+	
+
+	<file name="admin/controller/localisation/currency.php">
+
+		<operation>
+
+			<search position="before"><![CDATA[$this->model_localisation_currency->addCurrency($this->request->post);]]></search>
+
+			<add><![CDATA[$file = fopen(dirname(DIR_APPLICATION)."/vendors/currencyrates/consolidated.csv","r");
+
+			$code = $this->request->post["code"];
+
+			$officialCode = array();
+
+			$count = 0;
+
+			while(! feof($file))
+
+  			{
+
+				$officialCode = fgetcsv($file);
+
+				if($code == $officialCode[2]){
+
+					$cache = DIR_CACHE.'currencyrates.cachetime';
+
+					if(file_exists($cache)){
+
+						unlink ( $cache );
+
+					}
+
+					$count = 1;
+
+					fclose($file);]]></add>
+
+		</operation>
+
+	</file>
+
+	
+
+	<file name="admin/controller/localisation/currency.php">
+
+		<operation>
+
+			<search position="after" index="1"><![CDATA[$this->redirect($this->url->link('localisation/currency', 'token=' . $this->session->data['token'] . $url, 'SSL'));]]></search>
+
+			<add><![CDATA[}
+
+  				
+
+  			}
+
+			
+
+			if($count != 1){
+
+				
+
+				$this->error['code'] = "No such Code!";
+
+			}
+
+
+
+		]]></add>
+
+		</operation>
+
+	</file>
+
+	
+
+	<file name="admin/view/template/localisation/currency_list.tpl">
+
+		<operation>
+
+			<search position="replace"><![CDATA[<a href="<?php echo $insert; ?>" class="button">]]></search>
+
+			<add><![CDATA[<a href="<?php echo $this->url->link('module/currencyrates/updateRate', 'token=' . $this->session->data['token'], 'SSL') ?>" class="button">Update All Rates</a><a href="<?php echo $insert; ?>" class="button">]]></add>
+
+		</operation>
+
+	</file>
+
+	
+
+	<file name="admin/controller/localisation/currency.php">
+
+		<operation>
+
+			<search position="before" index="1"><![CDATA[$this->response->setOutput($this->render());]]></search>
+
+			<add><![CDATA[if (isset($this->session->data['error_warning'])) {
+
+
+
+			$this->data['error_warning'] = $this->session->data['error_warning'];
+
+			
+
+			unset($this->session->data['error_warning']);
+
+
+
+		}]]></add>
+
+		</operation>
+
+	</file>
+
+</modification>
+
